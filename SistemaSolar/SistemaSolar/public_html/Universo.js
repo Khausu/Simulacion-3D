@@ -31,13 +31,13 @@ var geometria = new THREE.SphereGeometry(0.63,32,24);
 
 
 //tierra
-var bgText1 = new THREE.TextureLoader().load('texturaTierra1.jpg');
+var bgText1 = new THREE.TextureLoader().load('tex_planetas/texturaTierra1.jpg');
 var texturaTierra = new THREE.MeshBasicMaterial({map: bgText1});
 var Tierra =  new THREE.Mesh(geometria, texturaTierra);
 
 //luna
 var geometriaLuna = new THREE.SphereGeometry(0.1, 32, 24);
-var bgText3 = new THREE.TextureLoader().load('texturaLuna1.jpg');
+var bgText3 = new THREE.TextureLoader().load('tex_planetas/texturaLuna1.jpg');
 var texturaLuna = new THREE.MeshPhongMaterial({map: bgText3});
 var luna = new THREE.Mesh(geometriaLuna,texturaLuna);
 luna.position.set(8, 0, 0);
@@ -45,7 +45,7 @@ Tierra.add(luna);
 
 //sol
 var geometriaSol = new THREE.SphereGeometry(69.5,32,24);
-var bgText2 = new THREE.TextureLoader().load('texturaSol1.jpg');
+var bgText2 = new THREE.TextureLoader().load('tex_planetas/texturaSol1.jpg');
 var texturaSol = new THREE.MeshBasicMaterial({map: bgText2});
 var sol =  new THREE.Mesh(geometriaSol, texturaSol);
 Tierra.position.set(-30,0,0);
@@ -53,44 +53,44 @@ sol.position.set(0, 0, 0);
 
 //mercurio
 var geometriaMercurio = new THREE.SphereGeometry(0.244,32,24);
-var bgText4 = new THREE.TextureLoader().load('texturaMercurio1.jpg');
+var bgText4 = new THREE.TextureLoader().load('tex_planetas/texturaMercurio1.jpg');
 var texturaMercurio = new THREE.MeshBasicMaterial({map: bgText4});
 var Mercurio =  new THREE.Mesh(geometriaMercurio, texturaMercurio);
 
 
 //venus 
 var geometriaVenus = new THREE.SphereGeometry(0.605,32,24);
-var bgText5 = new THREE.TextureLoader().load('texturaVenus1.jpg');
+var bgText5 = new THREE.TextureLoader().load('tex_planetas/texturaVenus1.jpg');
 var texturaVenus = new THREE.MeshBasicMaterial({map: bgText5});
 var Venus =  new THREE.Mesh(geometriaVenus, texturaVenus);
 
 //marte
 var geometriaMarte = new THREE.SphereGeometry(0.338,32,24);
-var bgText6 = new THREE.TextureLoader().load('texturaVenus1.jpg');
+var bgText6 = new THREE.TextureLoader().load('tex_planetas/texturaMarte1.jpg');
 var texturaMarte = new THREE.MeshBasicMaterial({map: bgText6});
 var marte =  new THREE.Mesh(geometriaMarte, texturaMarte);
 
 
 //Urano
 var geometriaUrano = new THREE.SphereGeometry(0.025,32,24);
-var bgText8 = new THREE.TextureLoader().load('texturaUrano1.jpg');
+var bgText8 = new THREE.TextureLoader().load('tex_planetas/texturaUrano1.jpg');
 var texturaUrano = new THREE.MeshPhongMaterial({map: bgText8});
 var Urano =  new THREE.Mesh(geometriaUrano, texturaUrano);
 
 //Jupiter
 var geometriaJupiter = new THREE.SphereGeometry(7.42,32,24);
-var bgText7 = new THREE.TextureLoader().load('texturaJupiter1.jpg');
+var bgText7 = new THREE.TextureLoader().load('tex_planetas/texturaJupiter1.jpg');
 var texturaJupiter = new THREE.MeshBasicMaterial({map: bgText7});
 var Jupiter =  new THREE.Mesh(geometriaJupiter, texturaJupiter);
 
 //saturno 
 var geometriaSaturno = new THREE.SphereGeometry(6.02, 32, 24);
-var bgTextSaturno = new THREE.TextureLoader().load('texturasaturno1.jpg');
+var bgTextSaturno = new THREE.TextureLoader().load('tex_planetas/texturasaturno1.jpg');
 var texturaSaturno = new THREE.MeshBasicMaterial({map: bgTextSaturno});
 var Saturno = new THREE.Mesh(geometriaSaturno,texturaSaturno);
 
 var geometriaAnillo = new THREE.TorusGeometry(9,1.2, 3264);
-var bgTextAnillo = new THREE.TextureLoader().load('texturaAnilloSaturno.jpg');
+var bgTextAnillo = new THREE.TextureLoader().load('tex_planetas/texturaAnilloSaturno.jpg');
 var texturaAnillo = new THREE.MeshBasicMaterial({map: bgTextAnillo,side: THREE.DoubleSide});
 var anilloSaturno = new THREE.Mesh( geometriaAnillo,texturaAnillo);
 
@@ -101,7 +101,7 @@ grupoSaturno.add(anilloSaturno);
 
 //Asteroide
 var geometriaAst = new THREE.DodecahedronGeometry(10);
-var bgTextAst = new THREE.TextureLoader().load('TexturaAst.png');
+var bgTextAst = new THREE.TextureLoader().load('tex_planetas/texturaAst.png');
 var texturaAst = new THREE.MeshBasicMaterial({map: bgTextAst});
 var Asteroide =  new THREE.Mesh(geometriaAst, texturaAst);
 Asteroide.position.set(100,20,10);
@@ -149,34 +149,74 @@ loader1.load(
         
         );
 
-//PARCIAL
+//FORMAS GEOMETRICAS (three.js) - objetos estaticos, sin animacion
+var cargador = new THREE.TextureLoader();
+function material(ruta){
+    return new THREE.MeshBasicMaterial({map: cargador.load(ruta), side: THREE.DoubleSide});
+}
+var texCono = material('tex_planetas/texturaCono.jpg');
+var texCilindro = material('tex_planetas/texturaCilindro.jpg');
+var texRing = material('tex_planetas/texturaRing.jpg');
+var texTorus = material('tex_planetas/texturaTorus.jpg');
+var texNudo = material('tex_planetas/texturaNudo.jpg');
 
-var Mesh_Alien = new THREE.TorusKnotGeometry( 10, 3, 100, 16 );
-var bgTextEyes = new THREE.TextureLoader().load('OjosVarios.png');
-var TexturaEyes = new THREE.MeshBasicMaterial({map: bgTextEyes});
+//CONO -> cohete: cuerpo (cilindro) + ojiva (cono) + base (cono invertido)
+var grupoCono = new THREE.Group();
+var ojiva = new THREE.Mesh(new THREE.ConeGeometry(1.2, 2.5, 32), texCono);
+ojiva.position.y = 2.5;
+var cuerpoCohete = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 3, 32), texCilindro);
+cuerpoCohete.position.y = 0.75;
+var tobera = new THREE.Mesh(new THREE.ConeGeometry(0.9, 1.2, 32), texCono);
+tobera.rotation.x = Math.PI;
+tobera.position.y = -1.35;
+grupoCono.add(ojiva);
+grupoCono.add(cuerpoCohete);
+grupoCono.add(tobera);
 
-var Alien = new THREE.Mesh( Mesh_Alien, TexturaEyes );
+//CILINDRO -> estacion espacial: tubo central + dos tanques + disco
+var grupoCilindro = new THREE.Group();
+var tubo = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 5, 32), texCilindro);
+var tanqueA = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 2, 24), texCilindro);
+tanqueA.rotation.z = Math.PI/2;
+tanqueA.position.set(0, 1, 0);
+var tanqueB = tanqueA.clone();
+tanqueB.position.set(0, -1, 0);
+var disco = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, 0.2, 48), texRing);
+grupoCilindro.add(tubo);
+grupoCilindro.add(tanqueA);
+grupoCilindro.add(tanqueB);
+grupoCilindro.add(disco);
 
-Alien.position.set(-30,0,90);
+//RING -> portal estelar: anillo exterior + anillo interior
+var grupoRing = new THREE.Group();
+var portalExt = new THREE.Mesh(new THREE.RingGeometry(1.8, 3, 48), texRing);
+var portalInt = new THREE.Mesh(new THREE.RingGeometry(0.6, 1.4, 48), texNudo);
+portalInt.position.z = 0.05;
+grupoRing.add(portalExt);
+grupoRing.add(portalInt);
 
-escena.add( Alien );
+//TORUS GEOMETRY -> planeta gaseoso con anillo
+var grupoTorus = new THREE.Group();
+var planetaGas = new THREE.Mesh(new THREE.SphereGeometry(1.2, 32, 24), texTorus);
+var anilloGas = new THREE.Mesh(new THREE.TorusGeometry(2.2, 0.35, 16, 64), texTorus);
+anilloGas.rotation.x = Math.PI/2.5;
+grupoTorus.add(planetaGas);
+grupoTorus.add(anilloGas);
 
+//TORUS KNOT -> nudo cosmico con nucleo
+var grupoNudo = new THREE.Group();
+var nudo = new THREE.Mesh(new THREE.TorusKnotGeometry(1.6, 0.45, 128, 16), texNudo);
+var nucleo = new THREE.Mesh(new THREE.IcosahedronGeometry(0.5, 1), texCono);
+grupoNudo.add(nudo);
+grupoNudo.add(nucleo);
 
-
-//NEW MODEL
-
-var geometriaNAVE = new THREE.RingGeometry( 1, 5, 32 );
-var bgTextNAVE = new THREE.TextureLoader().load('TexturaAst.png');
-var TexturaNAVE = new THREE.MeshBasicMaterial({map: bgTextNAVE});
-var cylinder_NAVE = new THREE.Mesh( geometriaNAVE, TexturaNAVE );
-cylinder_NAVE.position.set(-30,0,90);
-
-
-
-escena.add( cylinder_NAVE );
-
-
-
+//posicionar las formas en fila frente a la camara
+var formas = [grupoCono, grupoCilindro, grupoRing, grupoTorus, grupoNudo];
+for (var i = 0; i < formas.length; i++){
+    formas[i].scale.set(0.6, 0.6, 0.6);
+    formas[i].position.set(-8 + i * 4, 14, 70);
+    escena.add(formas[i]);
+}
 
 //añadir a la escena
 escena.add(sol);
