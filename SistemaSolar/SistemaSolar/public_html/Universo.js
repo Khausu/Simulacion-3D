@@ -10,7 +10,7 @@ escena.add(new THREE.AxesHelper(5000));
 
 //Camara -->                     angulo de vision | relacion de aspecto | alcance min | alcance max
 var camara = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 100000);
-camara.position.set(0, 1800, 4000);
+camara.position.set(4300, 1600, 2200);
 
 window.addEventListener('resize', function(){
     camara.aspect = window.innerWidth / window.innerHeight;
@@ -156,7 +156,7 @@ for (var q = 0; q < 8; q++){
     puntal.position.set(Math.cos(angQ) * 2.95, Math.sin(angQ) * 2.95, -0.175);
     grupoRing.add(puntal);
 }
-grupoRing.rotation.y = 0.5;
+grupoRing.rotation.y = Math.PI / 2;   //de frente en X: la puerta mira hacia el Sol a lo largo del eje X
 
 //TORUS GEOMETRY -> SATELITE: cuerpo, anillo (el unico Torus) y dos paneles solares
 var grupoTorus = new THREE.Group();
@@ -172,12 +172,12 @@ grupoTorus.add(cuerpoSat, anilloSat, panelSatA, panelSatB);
 //posicionar las formas alineadas sobre el eje X (misma altura Y y misma Z)
 grupoCono.position.set(-680, 150, 900);      //cohete: vuela
 grupoCilindro.position.set(-340, 450, 900);  //ovni: vuela, mas arriba
-grupoRing.position.set(1800, 0, 0);          //puerta estelar: quieta, al final del eje X
+grupoRing.position.set(2000, 0, 0);          //puerta estelar: quieta, al final del eje X
 grupoTorus.position.set(700, 200, 900);      //satelite: vuela, un poco mas arriba
 
 grupoCono.scale.set(24, 24, 24);
 grupoCilindro.scale.set(24, 24, 24);
-grupoRing.scale.set(40, 40, 40);
+grupoRing.scale.set(70, 70, 70);
 grupoTorus.scale.set(40, 40, 40);
 
 escena.add(grupoCono);
