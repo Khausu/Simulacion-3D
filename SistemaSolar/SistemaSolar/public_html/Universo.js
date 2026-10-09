@@ -6,11 +6,11 @@ document.body.appendChild(renderer.domElement);
 
 //crear escena
 escena = new THREE.Scene();
-escena.add(new THREE.AxesHelper(3000));
+escena.add(new THREE.AxesHelper(5000));
 
 //Camara -->                     angulo de vision | relacion de aspecto | alcance min | alcance max
 var camara = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 100000);
-camara.position.set(0, 900, 2100);
+camara.position.set(0, 1200, 2800);
 
 window.addEventListener('resize', function(){
     camara.aspect = window.innerWidth / window.innerHeight;
@@ -24,39 +24,38 @@ function textura(ruta){
 }
 
 /*
- * ESCALA: el radio de la Tierra = 1.5 unidades. Los demas planetas conservan
- * su proporcion real respecto a la Tierra (Jupiter ~11 veces, Mercurio ~0.4...).
- * El Sol se reduce a 160 y las distancias se comprimen para que todo quepa en pantalla.
+ * ESCALA: la Tierra mide 16 unidades de radio y los demas planetas conservan el orden real
+ * de tamaños (suavizado para que los pequeños se vean). Jupiter es el mas grande y Mercurio el mas pequeño.
+ * El Sol se reduce a 200 y las distancias se comprimen para que todo quepa en pantalla.
  */
-var R = 8;
 
 //sol (quieto en el centro, solo gira sobre su eje)
-var sol = new THREE.Mesh(new THREE.SphereGeometry(160, 64, 48), new THREE.MeshBasicMaterial({map: textura('texturaSol1.jpg')}));
+var sol = new THREE.Mesh(new THREE.SphereGeometry(200, 64, 48), new THREE.MeshBasicMaterial({map: textura('texturaSol1.jpg')}));
 sol.position.set(0, 0, 0);
 
 //mercurio
-var Mercurio = new THREE.Mesh(new THREE.SphereGeometry(R * 0.38, 32, 24), new THREE.MeshBasicMaterial({map: textura('texturaMercurio1.jpg')}));
+var Mercurio = new THREE.Mesh(new THREE.SphereGeometry(8, 32, 24), new THREE.MeshBasicMaterial({map: textura('texturaMercurio1.jpg')}));
 
 //venus
-var Venus = new THREE.Mesh(new THREE.SphereGeometry(R * 0.95, 32, 24), new THREE.MeshBasicMaterial({map: textura('texturaVenus1.jpg')}));
+var Venus = new THREE.Mesh(new THREE.SphereGeometry(15.4, 32, 24), new THREE.MeshBasicMaterial({map: textura('texturaVenus1.jpg')}));
 
 //tierra + luna (la luna orbita a la Tierra, por eso van en un grupo)
-var Tierra = new THREE.Mesh(new THREE.SphereGeometry(R, 32, 24), new THREE.MeshBasicMaterial({map: textura('texturaTierra1.jpg')}));
-var luna = new THREE.Mesh(new THREE.SphereGeometry(R * 0.27, 32, 24), new THREE.MeshBasicMaterial({map: textura('texturaLuna1.jpg')}));
+var Tierra = new THREE.Mesh(new THREE.SphereGeometry(16, 32, 24), new THREE.MeshBasicMaterial({map: textura('texturaTierra1.jpg')}));
+var luna = new THREE.Mesh(new THREE.SphereGeometry(4.5, 32, 24), new THREE.MeshBasicMaterial({map: textura('texturaLuna1.jpg')}));
 var grupoTierra = new THREE.Group();
 grupoTierra.add(Tierra);
 grupoTierra.add(luna);
 
 //marte
-var marte = new THREE.Mesh(new THREE.SphereGeometry(R * 0.53, 32, 24), new THREE.MeshBasicMaterial({map: textura('texturaMarte1.jpg')}));
+var marte = new THREE.Mesh(new THREE.SphereGeometry(10.3, 32, 24), new THREE.MeshBasicMaterial({map: textura('texturaMarte1.jpg')}));
 
 //jupiter
-var Jupiter = new THREE.Mesh(new THREE.SphereGeometry(R * 11.2, 48, 32), new THREE.MeshBasicMaterial({map: textura('texturaJupiter1.jpg')}));
+var Jupiter = new THREE.Mesh(new THREE.SphereGeometry(86, 48, 32), new THREE.MeshBasicMaterial({map: textura('texturaJupiter1.jpg')}));
 
 //saturno + anillo
-var Saturno = new THREE.Mesh(new THREE.SphereGeometry(R * 9.45, 48, 32), new THREE.MeshBasicMaterial({map: textura('texturasaturno1.jpg')}));
+var Saturno = new THREE.Mesh(new THREE.SphereGeometry(77, 48, 32), new THREE.MeshBasicMaterial({map: textura('texturasaturno1.jpg')}));
 var anilloSaturno = new THREE.Mesh(
-        new THREE.TorusGeometry(R * 14, R * 2.2, 2, 96),
+        new THREE.TorusGeometry(115, 17, 2, 96),
         new THREE.MeshBasicMaterial({map: textura('texturaAnilloSaturno.jpg'), side: THREE.DoubleSide}));
 anilloSaturno.rotation.x = Math.PI / 2 - 0.45;
 anilloSaturno.scale.z = 0.15;
@@ -65,11 +64,11 @@ grupoSaturno.add(Saturno);
 grupoSaturno.add(anilloSaturno);
 
 //urano
-var Urano = new THREE.Mesh(new THREE.SphereGeometry(R * 4, 32, 24), new THREE.MeshBasicMaterial({map: textura('texturaUrano1.jpg')}));
+var Urano = new THREE.Mesh(new THREE.SphereGeometry(42, 32, 24), new THREE.MeshBasicMaterial({map: textura('texturaUrano1.jpg')}));
 
 //asteroide (entre Marte y Jupiter)
-var Asteroide = new THREE.Mesh(new THREE.DodecahedronGeometry(10), new THREE.MeshBasicMaterial({map: textura('texturaAst.png')}));
-Asteroide.position.set(580, 10, -120);
+var Asteroide = new THREE.Mesh(new THREE.DodecahedronGeometry(14), new THREE.MeshBasicMaterial({map: textura('texturaAst.png')}));
+Asteroide.position.set(760, 15, -160);
 
 //NAVE
 var loader1 = new THREE.GLTFLoader();
@@ -78,8 +77,8 @@ loader1.load(
         'nave.glb',
         function(objeto){
             navecruzero = objeto.scene;
-            navecruzero.position.set(-400, 50, 650);
-            navecruzero.scale.set(3, 3, 3);
+            navecruzero.position.set(-900, 100, 1100);
+            navecruzero.scale.set(5, 5, 5);
             escena.add(navecruzero);
         },
         undefined,
@@ -118,14 +117,11 @@ puntaCohete.position.y = 2.4;
 var toberaCohete = new THREE.Mesh(new THREE.ConeGeometry(0.6, 0.8, 24), texOvni);
 toberaCohete.rotation.x = Math.PI;
 toberaCohete.position.y = -2;
-var ventanaCohete = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.09, 12, 32), texOvni);
-ventanaCohete.position.set(0, 0.7, 0.9);
+var ventanaCohete = new THREE.Mesh(new THREE.RingGeometry(0.35, 0.47, 32), texOvni);
+ventanaCohete.position.set(0, 0.7, 0.92);
 var vidrioCohete = new THREE.Mesh(new THREE.CircleGeometry(0.35, 32), texCristal);
 vidrioCohete.position.set(0, 0.7, 0.91);
-var plataformaCohete = new THREE.Mesh(new THREE.RingGeometry(1.3, 2.4, 48), texCilindro);
-plataformaCohete.rotation.x = -Math.PI / 2;
-plataformaCohete.position.y = -2.4;
-grupoCono.add(cuerpoCohete, franjaCohete, puntaCohete, toberaCohete, ventanaCohete, vidrioCohete, plataformaCohete);
+grupoCono.add(cuerpoCohete, franjaCohete, puntaCohete, toberaCohete, ventanaCohete, vidrioCohete);
 for (var k = 0; k < 4; k++){
     var ang = k * Math.PI / 2;
     var aleta = new THREE.Mesh(new THREE.ConeGeometry(0.55, 1.8, 3), texCoheteRojo);
@@ -140,15 +136,9 @@ var grupoCilindro = new THREE.Group();
 var platillo = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 3.2, 0.6, 48), texOvni);
 var cupula = new THREE.Mesh(new THREE.SphereGeometry(1.3, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), texCristal);
 cupula.position.y = 0.3;
-var aroLuces = new THREE.Mesh(new THREE.TorusGeometry(2.7, 0.2, 12, 64), texLuces);
-aroLuces.rotation.x = Math.PI / 2;
+var aroLuces = new THREE.Mesh(new THREE.CylinderGeometry(3.2, 3.2, 0.25, 64), texLuces);
 aroLuces.position.y = -0.05;
-var hazTractor = new THREE.Mesh(new THREE.ConeGeometry(2.4, 3.6, 40, 1, true), materialTransparente('texturaCristal.jpg', 0.3));
-hazTractor.position.y = -2.4;
-var luzSuelo = new THREE.Mesh(new THREE.RingGeometry(0.6, 2.4, 40), materialTransparente('texturaRing.jpg', 0.5));
-luzSuelo.rotation.x = -Math.PI / 2;
-luzSuelo.position.y = -4.2;
-grupoCilindro.add(platillo, cupula, aroLuces, hazTractor, luzSuelo);
+grupoCilindro.add(platillo, cupula, aroLuces);
 for (var p = 0; p < 3; p++){
     var angP = p * Math.PI * 2 / 3;
     var pata = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.9, 12), texOvni);
@@ -158,31 +148,45 @@ for (var p = 0; p < 3; p++){
 }
 grupoCilindro.position.y = 0;
 
-//RING -> PORTAL ESTELAR: anillos concentricos
+//RING -> PUERTA ESTELAR: marco metalico, anillo de luces y remolino de galaxia en el centro
 var grupoRing = new THREE.Group();
-var portalExt = new THREE.Mesh(new THREE.RingGeometry(2.4, 3.2, 64), texRing);
-var portalMed = new THREE.Mesh(new THREE.RingGeometry(1.5, 2.2, 64), texNudo);
-var portalInt = new THREE.Mesh(new THREE.RingGeometry(0.6, 1.3, 64), texTorus);
-portalMed.position.z = 0.03;
-portalInt.position.z = 0.06;
-grupoRing.add(portalExt, portalMed, portalInt);
+var marcoPuerta = new THREE.Mesh(new THREE.RingGeometry(2.6, 3.3, 64), texOvni);
+var lucesPuerta = new THREE.Mesh(new THREE.RingGeometry(2.3, 2.6, 64), texLuces);
+var remolino = new THREE.Mesh(new THREE.CircleGeometry(2.3, 64), material('texturaPortal.jpg'));
+var marcoTrasero = marcoPuerta.clone();
+marcoTrasero.position.z = -0.35;
+lucesPuerta.position.z = 0.02;
+remolino.position.z = -0.1;
+grupoRing.add(marcoPuerta, marcoTrasero, lucesPuerta, remolino);
+for (var q = 0; q < 8; q++){
+    var angQ = q * Math.PI / 4;
+    var puntal = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.35, 8), texOvni);
+    puntal.rotation.x = Math.PI / 2;
+    puntal.position.set(Math.cos(angQ) * 2.95, Math.sin(angQ) * 2.95, -0.175);
+    grupoRing.add(puntal);
+}
+grupoRing.rotation.y = 0.5;
 
-//TORUS GEOMETRY -> ESTACION ESPACIAL: nucleo, rueda habitacional, radios, paneles solares y antena
+//TORUS GEOMETRY -> SATELITE: cuerpo, anillo de antenas (el unico Torus), paneles solares y antena parabolica
 var grupoTorus = new THREE.Group();
-var nucleoEst = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 4, 24), texCilindro);
-var ruedaEst = new THREE.Mesh(new THREE.TorusGeometry(2.4, 0.35, 16, 64), texOvni);
-ruedaEst.rotation.x = Math.PI / 2;
-var radioX = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 4.8, 8), texCilindro);
-radioX.rotation.z = Math.PI / 2;
-var radioZ = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 4.8, 8), texCilindro);
-radioZ.rotation.x = Math.PI / 2;
-var panelA = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.05, 1), texPanel);
-panelA.position.set(1.6, 1.7, 0);
-var panelB = panelA.clone();
-panelB.position.set(-1.6, 1.7, 0);
-var antenaEst = new THREE.Mesh(new THREE.ConeGeometry(0.5, 0.6, 24), texOvni);
-antenaEst.position.y = 2.3;
-grupoTorus.add(nucleoEst, ruedaEst, radioX, radioZ, panelA, panelB, antenaEst);
+var cuerpoSat = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, 2.2, 24), texOvni);
+var tapaSat = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.85, 0.3, 24), texCohete);
+tapaSat.position.y = 1.2;
+var anilloSat = new THREE.Mesh(new THREE.TorusGeometry(1.3, 0.12, 12, 48), texLuces);
+anilloSat.rotation.x = Math.PI / 2;
+var brazoSat = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 6.4, 8), texCilindro);
+brazoSat.rotation.z = Math.PI / 2;
+var panelSatA = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.06, 1.4), texPanel);
+panelSatA.position.set(2.2, 0, 0);
+var panelSatB = panelSatA.clone();
+panelSatB.position.set(-2.2, 0, 0);
+var platoSat = new THREE.Mesh(new THREE.ConeGeometry(0.9, 0.5, 32, 1, true), texOvni);
+platoSat.position.y = 1.75;
+var antenaSat = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.7, 6), texCilindro);
+antenaSat.position.y = 2.05;
+grupoTorus.add(cuerpoSat, tapaSat, anilloSat, brazoSat, panelSatA, panelSatB, platoSat, antenaSat);
+grupoTorus.rotation.z = 0.35;
+grupoTorus.rotation.x = 0.4;
 
 //TORUS KNOT -> COMETA: nucleo en forma de nudo y cola de hielo
 var grupoNudo = new THREE.Group();
@@ -195,13 +199,14 @@ colaInt.rotation.z = -Math.PI / 2;
 colaInt.position.x = 2.4;
 grupoNudo.add(nucleoCometa, colaExt, colaInt);
 
-//posicionar las formas alineadas sobre el eje X (mismo Y y Z)
+//posicionar las formas alineadas sobre el eje X (mismo Z) - Cohete y OVNI parten de su lugar y luego vuelan
 var formas = [grupoCono, grupoCilindro, grupoRing, grupoTorus, grupoNudo];
 for (var i = 0; i < formas.length; i++){
-    formas[i].scale.set(20, 20, 20);
-    formas[i].position.set(-520 + i * 260, 0, 650);
+    formas[i].scale.set(24, 24, 24);
+    formas[i].position.set(-680 + i * 340, 0, 900);
     escena.add(formas[i]);
 }
+grupoCilindro.position.y = 450;
 
 //añadir a la escena
 escena.add(sol);
@@ -218,16 +223,16 @@ controls = new THREE.OrbitControls(camara, renderer.domElement);
 
 //orbitas alrededor del Sol: radio de la orbita y velocidad angular (mas lenta cuanto mas lejos, ley de Kepler)
 function velocidad(radio){
-    return 0.005 * Math.pow(390 / radio, 1.5);
+    return 0.005 * Math.pow(510 / radio, 1.5);
 }
 var orbitas = [
-    {cuerpo: Mercurio,     radio: 230,  angulo: 0.5},
-    {cuerpo: Venus,        radio: 310, angulo: 2.0},
-    {cuerpo: grupoTierra,  radio: 390, angulo: 4.0},
-    {cuerpo: marte,        radio: 470, angulo: 1.0},
-    {cuerpo: Jupiter,      radio: 700, angulo: 3.0},
-    {cuerpo: grupoSaturno, radio: 960, angulo: 5.5},
-    {cuerpo: Urano,        radio: 1200, angulo: 0.0}
+    {cuerpo: Mercurio,     radio: 300,  angulo: 0.5},
+    {cuerpo: Venus,        radio: 400,  angulo: 2.0},
+    {cuerpo: grupoTierra,  radio: 510,  angulo: 4.0},
+    {cuerpo: marte,        radio: 620,  angulo: 1.0},
+    {cuerpo: Jupiter,      radio: 900,  angulo: 3.0},
+    {cuerpo: grupoSaturno, radio: 1250, angulo: 5.5},
+    {cuerpo: Urano,        radio: 1600, angulo: 0.0}
 ];
 orbitas.forEach(function(o){
     o.cuerpo.position.set(Math.cos(o.angulo) * o.radio, 0, Math.sin(o.angulo) * o.radio);
@@ -235,9 +240,15 @@ orbitas.forEach(function(o){
 
 var anguloLuna = 0;
 
+//vuelo del cohete y del OVNI alrededor del Sol (parten de su posicion en la fila)
+var rutaCohete = {radio: Math.hypot(grupoCono.position.x, grupoCono.position.z), angulo: Math.atan2(grupoCono.position.z, grupoCono.position.x), vel: 0.0025, y: 150};
+var rutaOvni = {radio: Math.hypot(grupoCilindro.position.x, grupoCilindro.position.z), angulo: Math.atan2(grupoCilindro.position.z, grupoCilindro.position.x), vel: -0.0018, y: 450};
+var tiempo = 0;
+var ejeY = new THREE.Vector3(0, 1, 0);
+var direccion = new THREE.Vector3();
+
 function proyectar(){
-    //el Sol permanece quieto, solo rota
-    sol.rotation.y += 0.002;
+    //el Sol permanece completamente quieto en el centro
 
     orbitas.forEach(function(o){
         o.angulo += velocidad(o.radio);
@@ -248,7 +259,19 @@ function proyectar(){
     //rotacion propia de la Tierra y orbita lunar
     Tierra.rotation.y += 0.02;
     anguloLuna += 0.03;
-    luna.position.set(Math.cos(anguloLuna) * 22, 0, Math.sin(anguloLuna) * 22);
+    luna.position.set(Math.cos(anguloLuna) * 40, 0, Math.sin(anguloLuna) * 40);
+
+    tiempo += 1;
+
+    //cohete: vuela en circulo, con la punta orientada en la direccion del vuelo
+    rutaCohete.angulo += rutaCohete.vel;
+    grupoCono.position.set(Math.cos(rutaCohete.angulo) * rutaCohete.radio, rutaCohete.y, Math.sin(rutaCohete.angulo) * rutaCohete.radio);
+    direccion.set(-Math.sin(rutaCohete.angulo), 0, Math.cos(rutaCohete.angulo));
+    grupoCono.quaternion.setFromUnitVectors(ejeY, direccion);
+
+    //ovni: vuela en sentido contrario, mas arriba y con un suave vaiven vertical
+    rutaOvni.angulo += rutaOvni.vel;
+    grupoCilindro.position.set(Math.cos(rutaOvni.angulo) * rutaOvni.radio, rutaOvni.y + Math.sin(tiempo * 0.03) * 30, Math.sin(rutaOvni.angulo) * rutaOvni.radio);
 
     requestAnimationFrame(proyectar);
     renderer.render(escena, camara);
