@@ -10,7 +10,7 @@ escena.add(new THREE.AxesHelper(5000));
 
 //Camara -->                     angulo de vision | relacion de aspecto | alcance min | alcance max
 var camara = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 100000);
-camara.position.set(0, 1200, 2800);
+camara.position.set(0, 1800, 4000);
 
 window.addEventListener('resize', function(){
     camara.aspect = window.innerWidth / window.innerHeight;
@@ -87,7 +87,7 @@ loader1.load(
         }
 );
 
-//FORMAS GEOMETRICAS (three.js): el cohete y el ovni dan vueltas, la puerta y el satelite estan quietos
+//FORMAS GEOMETRICAS (three.js): el cohete, el ovni y el satelite dan vueltas, solo la puerta esta quieta
 function material(ruta){
     return new THREE.MeshBasicMaterial({map: textura(ruta), side: THREE.DoubleSide});
 }
@@ -172,12 +172,12 @@ grupoTorus.add(cuerpoSat, anilloSat, panelSatA, panelSatB);
 //posicionar las formas alineadas sobre el eje X (misma altura Y y misma Z)
 grupoCono.position.set(-680, 150, 900);      //cohete: vuela
 grupoCilindro.position.set(-340, 450, 900);  //ovni: vuela, mas arriba
-grupoRing.position.set(0, 0, 900);           //puerta estelar: quieta
-grupoTorus.position.set(700, 0, 900);        //satelite: quieto, al fondo en X
+grupoRing.position.set(1800, 0, 0);          //puerta estelar: quieta, al final del eje X
+grupoTorus.position.set(700, 200, 900);      //satelite: vuela, un poco mas arriba
 
 grupoCono.scale.set(24, 24, 24);
 grupoCilindro.scale.set(24, 24, 24);
-grupoRing.scale.set(24, 24, 24);
+grupoRing.scale.set(40, 40, 40);
 grupoTorus.scale.set(40, 40, 40);
 
 escena.add(grupoCono);
@@ -211,7 +211,8 @@ var orbitas = [
     {cuerpo: grupoSaturno, radio: 1250, angulo: 5.5},
     {cuerpo: Urano,        radio: 1600, angulo: 0.0},
     {cuerpo: grupoCono,     radio: Math.hypot(-680, 900), angulo: Math.atan2(900, -680)},
-    {cuerpo: grupoCilindro, radio: Math.hypot(-340, 900), angulo: Math.atan2(900, -340)}
+    {cuerpo: grupoCilindro, radio: Math.hypot(-340, 900), angulo: Math.atan2(900, -340)},
+    {cuerpo: grupoTorus,    radio: Math.hypot(700, 900),  angulo: Math.atan2(900, 700)}
 ];
 orbitas.forEach(function(o){
     o.cuerpo.position.x = Math.cos(o.angulo) * o.radio;
