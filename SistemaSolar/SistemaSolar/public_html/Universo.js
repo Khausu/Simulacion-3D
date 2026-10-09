@@ -6,11 +6,11 @@ document.body.appendChild(renderer.domElement);
 
 //crear escena
 escena = new THREE.Scene();
-escena.add(new THREE.AxesHelper(2000));
+escena.add(new THREE.AxesHelper(3000));
 
 //Camara -->                     angulo de vision | relacion de aspecto | alcance min | alcance max
 var camara = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 100000);
-camara.position.set(0, 350, 800);
+camara.position.set(0, 900, 2100);
 
 window.addEventListener('resize', function(){
     camara.aspect = window.innerWidth / window.innerHeight;
@@ -26,12 +26,12 @@ function textura(ruta){
 /*
  * ESCALA: el radio de la Tierra = 1.5 unidades. Los demas planetas conservan
  * su proporcion real respecto a la Tierra (Jupiter ~11 veces, Mercurio ~0.4...).
- * El Sol se reduce a 40 y las distancias se comprimen para que todo quepa en pantalla.
+ * El Sol se reduce a 160 y las distancias se comprimen para que todo quepa en pantalla.
  */
-var R = 1.5;
+var R = 8;
 
 //sol (quieto en el centro, solo gira sobre su eje)
-var sol = new THREE.Mesh(new THREE.SphereGeometry(40, 48, 32), new THREE.MeshBasicMaterial({map: textura('texturaSol1.jpg')}));
+var sol = new THREE.Mesh(new THREE.SphereGeometry(160, 64, 48), new THREE.MeshBasicMaterial({map: textura('texturaSol1.jpg')}));
 sol.position.set(0, 0, 0);
 
 //mercurio
@@ -56,9 +56,9 @@ var Jupiter = new THREE.Mesh(new THREE.SphereGeometry(R * 11.2, 48, 32), new THR
 //saturno + anillo
 var Saturno = new THREE.Mesh(new THREE.SphereGeometry(R * 9.45, 48, 32), new THREE.MeshBasicMaterial({map: textura('texturasaturno1.jpg')}));
 var anilloSaturno = new THREE.Mesh(
-        new THREE.TorusGeometry(R * 14, R * 1.8, 2, 96),
+        new THREE.TorusGeometry(R * 14, R * 2.2, 2, 96),
         new THREE.MeshBasicMaterial({map: textura('texturaAnilloSaturno.jpg'), side: THREE.DoubleSide}));
-anilloSaturno.rotation.x = Math.PI / 2.2;
+anilloSaturno.rotation.x = Math.PI / 2 - 0.45;
 anilloSaturno.scale.z = 0.15;
 var grupoSaturno = new THREE.Group();
 grupoSaturno.add(Saturno);
@@ -68,8 +68,8 @@ grupoSaturno.add(anilloSaturno);
 var Urano = new THREE.Mesh(new THREE.SphereGeometry(R * 4, 32, 24), new THREE.MeshBasicMaterial({map: textura('texturaUrano1.jpg')}));
 
 //asteroide (entre Marte y Jupiter)
-var Asteroide = new THREE.Mesh(new THREE.DodecahedronGeometry(3), new THREE.MeshBasicMaterial({map: textura('texturaAst.png')}));
-Asteroide.position.set(215, 5, -40);
+var Asteroide = new THREE.Mesh(new THREE.DodecahedronGeometry(10), new THREE.MeshBasicMaterial({map: textura('texturaAst.png')}));
+Asteroide.position.set(580, 10, -120);
 
 //NAVE
 var loader1 = new THREE.GLTFLoader();
@@ -78,8 +78,8 @@ loader1.load(
         'nave.glb',
         function(objeto){
             navecruzero = objeto.scene;
-            navecruzero.position.set(-150, 20, 250);
-            navecruzero.scale.set(1, 1, 1);
+            navecruzero.position.set(-400, 50, 650);
+            navecruzero.scale.set(3, 3, 3);
             escena.add(navecruzero);
         },
         undefined,
@@ -133,13 +133,12 @@ portalInt.position.z = 0.05;
 grupoRing.add(portalExt);
 grupoRing.add(portalInt);
 
-//TORUS GEOMETRY -> planeta gaseoso con anillo
+//TORUS GEOMETRY -> dona cosmica con perla central
 var grupoTorus = new THREE.Group();
-var planetaGas = new THREE.Mesh(new THREE.SphereGeometry(1.2, 32, 24), texTorus);
-var anilloGas = new THREE.Mesh(new THREE.TorusGeometry(2.2, 0.35, 16, 64), texTorus);
-anilloGas.rotation.x = Math.PI/2.5;
-grupoTorus.add(planetaGas);
-grupoTorus.add(anilloGas);
+var dona = new THREE.Mesh(new THREE.TorusGeometry(1.8, 0.8, 24, 64), texTorus);
+var perla = new THREE.Mesh(new THREE.SphereGeometry(0.7, 24, 16), texCono);
+grupoTorus.add(dona);
+grupoTorus.add(perla);
 
 //TORUS KNOT -> nudo cosmico con nucleo
 var grupoNudo = new THREE.Group();
@@ -151,8 +150,8 @@ grupoNudo.add(nucleo);
 //posicionar las formas alineadas sobre el eje X (mismo Y y Z)
 var formas = [grupoCono, grupoCilindro, grupoRing, grupoTorus, grupoNudo];
 for (var i = 0; i < formas.length; i++){
-    formas[i].scale.set(8, 8, 8);
-    formas[i].position.set(-200 + i * 100, 0, 250);
+    formas[i].scale.set(20, 20, 20);
+    formas[i].position.set(-520 + i * 260, 0, 650);
     escena.add(formas[i]);
 }
 
@@ -171,16 +170,16 @@ controls = new THREE.OrbitControls(camara, renderer.domElement);
 
 //orbitas alrededor del Sol: radio de la orbita y velocidad angular (mas lenta cuanto mas lejos, ley de Kepler)
 function velocidad(radio){
-    return 0.005 * Math.pow(135 / radio, 1.5);
+    return 0.005 * Math.pow(390 / radio, 1.5);
 }
 var orbitas = [
-    {cuerpo: Mercurio,     radio: 70,  angulo: 0.5},
-    {cuerpo: Venus,        radio: 100, angulo: 2.0},
-    {cuerpo: grupoTierra,  radio: 135, angulo: 4.0},
-    {cuerpo: marte,        radio: 175, angulo: 1.0},
-    {cuerpo: Jupiter,      radio: 270, angulo: 3.0},
-    {cuerpo: grupoSaturno, radio: 370, angulo: 5.5},
-    {cuerpo: Urano,        radio: 460, angulo: 0.0}
+    {cuerpo: Mercurio,     radio: 230,  angulo: 0.5},
+    {cuerpo: Venus,        radio: 310, angulo: 2.0},
+    {cuerpo: grupoTierra,  radio: 390, angulo: 4.0},
+    {cuerpo: marte,        radio: 470, angulo: 1.0},
+    {cuerpo: Jupiter,      radio: 700, angulo: 3.0},
+    {cuerpo: grupoSaturno, radio: 960, angulo: 5.5},
+    {cuerpo: Urano,        radio: 1200, angulo: 0.0}
 ];
 orbitas.forEach(function(o){
     o.cuerpo.position.set(Math.cos(o.angulo) * o.radio, 0, Math.sin(o.angulo) * o.radio);
@@ -201,7 +200,7 @@ function proyectar(){
     //rotacion propia de la Tierra y orbita lunar
     Tierra.rotation.y += 0.02;
     anguloLuna += 0.03;
-    luna.position.set(Math.cos(anguloLuna) * 5, 0, Math.sin(anguloLuna) * 5);
+    luna.position.set(Math.cos(anguloLuna) * 22, 0, Math.sin(anguloLuna) * 22);
 
     requestAnimationFrame(proyectar);
     renderer.render(escena, camara);
