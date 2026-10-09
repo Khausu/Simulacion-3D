@@ -218,6 +218,11 @@ orbitas.forEach(function(o){
 });
 
 var anguloLuna = 0;
+
+//animacion del tamaño del Sol
+var velocidadSol = 1.0005;      //cuanto crece en cada cuadro (0.05 %)
+var factorSol = velocidadSol;   //por cuanto se multiplica ahora (crece o se encoge)
+var escalaMaxSol = 1.3;         //tamaño maximo (1.3 = 30 % mas grande)
 var anguloSat = 0;
 
 //el cohete se inclina para volar de lado: primero gira en X y luego en Y
@@ -228,10 +233,12 @@ function proyectar(){
     //SOL: no se mueve de lugar, pero rota lentamente en horizontal (eje Y)
     sol.rotation.y += 0.002;
 
-    //SOL: crece poco a poco multiplicando su escala; al llegar al maximo vuelve a su tamaño original
-    sol.scale.multiplyScalar(1.0005);
-    if (sol.scale.x >= 1.3){
-        sol.scale.set(1, 1, 1);
+    //SOL: crece y se encoge con la misma velocidad usando multiplyScalar
+    sol.scale.multiplyScalar(factorSol);
+    if (sol.scale.x >= escalaMaxSol){
+        factorSol = 1 / velocidadSol;   //llego al maximo: ahora se encoge (divide por el mismo valor)
+    } else if (sol.scale.x <= 1){
+        factorSol = velocidadSol;       //volvio al tamaño original: vuelve a crecer
     }
 
     orbitas.forEach(function(o){
