@@ -87,7 +87,7 @@ loader1.load(
         }
 );
 
-//FORMAS GEOMETRICAS (three.js): el cohete, el ovni y el satelite dan vueltas, solo la puerta esta quieta
+//FORMAS GEOMETRICAS (three.js): el cohete y el ovni dan vueltas al Sol, el satelite a la Tierra, solo la puerta esta quieta
 function material(ruta){
     return new THREE.MeshBasicMaterial({map: textura(ruta), side: THREE.DoubleSide});
 }
@@ -168,22 +168,21 @@ panelSatA.position.x = 2.4;
 var panelSatB = panelSatA.clone();
 panelSatB.position.x = -2.4;
 grupoTorus.add(cuerpoSat, anilloSat, panelSatA, panelSatB);
+grupoTierra.add(grupoTorus);
 
 //posicionar las formas alineadas sobre el eje X (misma altura Y y misma Z)
 grupoCono.position.set(-680, 150, 900);      //cohete: vuela
 grupoCilindro.position.set(-340, 450, 900);  //ovni: vuela, mas arriba
 grupoRing.position.set(2000, 0, 0);          //puerta estelar: quieta, al final del eje X
-grupoTorus.position.set(700, 200, 900);      //satelite: vuela, un poco mas arriba
 
 grupoCono.scale.set(24, 24, 24);
 grupoCilindro.scale.set(24, 24, 24);
 grupoRing.scale.set(70, 70, 70);
-grupoTorus.scale.set(40, 40, 40);
+grupoTorus.scale.set(1.5, 1.5, 1.5);   //satelite pequeño, acorde al tamaño de la Tierra
 
 escena.add(grupoCono);
 escena.add(grupoCilindro);
 escena.add(grupoRing);
-escena.add(grupoTorus);
 
 //añadir a la escena
 escena.add(sol);
@@ -211,8 +210,7 @@ var orbitas = [
     {cuerpo: grupoSaturno, radio: 1250, angulo: 5.5},
     {cuerpo: Urano,        radio: 1600, angulo: 0.0},
     {cuerpo: grupoCono,     radio: Math.hypot(-680, 900), angulo: Math.atan2(900, -680)},
-    {cuerpo: grupoCilindro, radio: Math.hypot(-340, 900), angulo: Math.atan2(900, -340)},
-    {cuerpo: grupoTorus,    radio: Math.hypot(700, 900),  angulo: Math.atan2(900, 700)}
+    {cuerpo: grupoCilindro, radio: Math.hypot(-340, 900), angulo: Math.atan2(900, -340)}
 ];
 orbitas.forEach(function(o){
     o.cuerpo.position.x = Math.cos(o.angulo) * o.radio;
@@ -220,6 +218,7 @@ orbitas.forEach(function(o){
 });
 
 var anguloLuna = 0;
+var anguloSat = 0;
 
 //el cohete se inclina para volar de lado: primero gira en X y luego en Y
 grupoCono.rotation.order = 'YXZ';
@@ -238,6 +237,12 @@ function proyectar(){
     Tierra.rotation.y += 0.02;
     anguloLuna += 0.03;
     luna.position.set(Math.cos(anguloLuna) * 40, 0, Math.sin(anguloLuna) * 40);
+
+    //satelite: da vueltas a la Tierra en sentido contrario a la Luna (el angulo RESTA)
+    //y en un plano vertical, pasando por encima de los polos. Como es hijo de grupoTierra,
+    //su position es relativa a la Tierra (no hace falta copiar Tierra.position).
+    anguloSat -= 0.05;
+    grupoTorus.position.set(Math.cos(anguloSat) * 28, Math.sin(anguloSat) * 28, 0);
 
     //la punta del cohete apunta hacia donde avanza
     grupoCono.rotation.y = -orbitas[7].angulo;
