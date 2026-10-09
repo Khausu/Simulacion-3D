@@ -29,7 +29,7 @@ function textura(ruta){
  * El Sol se reduce a 200 y las distancias se comprimen para que todo quepa en pantalla.
  */
 
-//sol (quieto en el centro, no rota ni se mueve)
+//sol (quieto en el centro; en proyectar() rota y pulsa de tamaño)
 var sol = new THREE.Mesh(new THREE.SphereGeometry(200, 64, 48), new THREE.MeshBasicMaterial({map: textura('texturaSol1.jpg')}));
 sol.position.set(0, 0, 0);
 
@@ -225,7 +225,14 @@ grupoCono.rotation.order = 'YXZ';
 grupoCono.rotation.x = Math.PI / 2;
 
 function proyectar(){
-    //el Sol permanece completamente quieto en el centro
+    //SOL: no se mueve de lugar, pero rota lentamente en horizontal (eje Y)
+    sol.rotation.y += 0.002;
+
+    //SOL: crece poco a poco multiplicando su escala; al llegar al maximo vuelve a su tamaño original
+    sol.scale.multiplyScalar(1.0005);
+    if (sol.scale.x >= 1.3){
+        sol.scale.set(1, 1, 1);
+    }
 
     orbitas.forEach(function(o){
         o.angulo += velocidad(o.radio);
